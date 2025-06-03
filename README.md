@@ -57,3 +57,77 @@ Para um deployment eficiente e escalável, o projeto utiliza plataformas de nuve
 * **Vercel:** Utilizado para o deployment do frontend React, conhecida por sua automação de build, alta performance e integração contínua com repositórios Git.
 
 ---
+
+## Desafios Técnicos Abordados
+
+### Backend (API REST)
+
+A API foi projetada para ser robusta, escalável e segura, cobrindo as seguintes funcionalidades:
+
+* **Gerenciamento Completo de Clientes (CRUD):** Permite cadastrar, listar (com filtros por nome ou e-mail), deletar e editar informações de clientes.
+* **Autenticação Rest:** Todas as rotas sensíveis requerem autenticação JWT (JSON Web Token) para garantir acesso seguro.
+* **Gestão de Vendas:** Inclui uma tabela dedicada (`sales`) para armazenar o histórico de compras de cada cliente.
+* **Métricas e Estatísticas Avançadas:**
+    * Rota que retorna o **total de vendas por dia**, fornecendo uma visão diária do desempenho.
+    * Rota de insights que identifica:
+        * O cliente com o **maior volume de vendas**.
+        * O cliente com a **maior média de valor por venda**.
+        * O cliente com a **maior frequência de compra** (maior número de dias únicos com vendas registradas).
+* **Testes Automatizados:** Ampla cobertura de testes para garantir a funcionalidade e estabilidade da API.
+
+### Frontend (Aplicação Web)
+
+A aplicação React foi construída para ser intuitiva e eficiente, lidando com desafios de consumo e normalização de dados:
+
+* **Painel de Clientes Interativo:** Permite adicionar clientes com nome, e-mail e data de nascimento, além de listar e gerenciar as informações existentes.
+* **Autenticação Simples:** Integração com a API para um fluxo de login básico.
+* **Normalização de Dados Complexos:** O frontend é capaz de processar e normalizar estruturas de dados desorganizadas e redundantes retornadas pela API de listagem de clientes, garantindo que apenas informações relevantes sejam exibidas de forma clara.
+    ```json
+    {
+     "data": {
+     "clientes": [
+     {
+     "info": {
+     "nomeCompleto": "Ana Beatriz",
+     "detalhes": {
+     "email": "ana.b@example.com",
+     "nascimento": "1992-05-01"
+     }
+     },
+     "estatisticas": {
+     "vendas": [
+     { "data": "2024-01-01", "valor": 150 },
+     { "data": "2024-01-02", "valor": 50 }
+     ]
+     }
+     },
+     {
+     "info": {
+     "nomeCompleto": "Carlos Eduardo",
+     "detalhes": {
+     "email": "cadu@example.com",
+     "nascimento": "1987-08-15"
+     }
+     },
+     "duplicado": {
+     "nomeCompleto": "Carlos Eduardo"
+     },
+     "estatisticas": {
+     "vendas": []
+     }
+     }
+     ]
+     },
+     "meta": {
+     "registroTotal": 2,
+     "pagina": 1
+     },
+     "redundante": {
+     "status": "ok"
+     }
+    }
+    ```
+* **Visualização de Estatísticas:**
+    * Exibição de um **gráfico dinâmico** com o total de vendas por dia.
+    * Destaque visual para os clientes com **maior volume de vendas**, **maior média de valor por venda** e **maior frequência de compras**.
+* **Recurso Visual Exclusivo:** Para cada cliente, é exibida a **primeira letra do alfabeto que ainda não apareceu em seu nome completo**. Se todas as letras de 'a' a 'z' estiverem presentes, um hífen ('-') é exibido.
