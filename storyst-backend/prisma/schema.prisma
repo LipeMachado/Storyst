@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id            String   @id @default(uuid()) @map("id")
+  name          String   @map("name")
+  email         String   @unique @map("email")
+  birth_date    DateTime @map("birth_date") @db.Date
+  password_hash String   @map("password_hash")
+  created_at    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  sales         Sale[]
+
+  @@map("customers")
+}
+
+model Sale {
+  id          String   @id @default(uuid()) @map("id")
+  customer_id String   @map("customer_id")
+  sale_date   DateTime @map("sale_date") @db.Date
+  value       Decimal  @map("value") @db.Decimal(10, 2)
+  created_at  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  customer    Customer @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+
+  @@map("sales")
+}

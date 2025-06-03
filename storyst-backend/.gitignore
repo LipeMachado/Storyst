@@ -1,3 +1,5 @@
+/generated/prisma
+
 # Arquivos de Sistema Operacional
 .DS_Store
 Thumbs.db
@@ -58,3 +60,10 @@ package-lock.json # Se você prefere usar yarn.lock ou não versionar o lock (me
 
 # Arquivos de log do Vercel
 .vercel/
+
+# Arquivos de variáveis de ambiente
+.env.production
+.env.development
+.env.local
+.env.test
+.env
