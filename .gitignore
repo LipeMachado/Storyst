@@ -1,0 +1,69 @@
+/generated/prisma
+
+# Arquivos de Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Diretórios de Módulos (Node.js)
+node_modules/
+
+# Arquivos de Log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Variáveis de Ambiente
+.env
+.env.local
+.env.*.local
+
+# Arquivos de Build e Compilação
+/backend/build/
+/backend/dist/
+/frontend/dist/
+
+# Arquivos de Cache do TypeScript
+*.tsbuildinfo
+
+# Arquivos de Teste (Cobertura, etc.)
+coverage/
+.nyc_output/
+*.sqlite
+.jest/cache/
+
+# Arquivos de IDE (VS Code, IntelliJ, etc.)
+.vscode/
+.idea/
+*.iml
+
+# Arquivos Docker
+*.swp
+*.bak
+*.swo
+
+# Arquivos específicos do Prisma
+/backend/prisma/migrations/
+/backend/prisma/dev.db
+
+# Arquivos de configuração do Vite (se forem gerados dinamicamente)
+.vite/
+
+# Arquivos específicos do npm
+.npm/
+npm-debug.log
+package-lock.json # Se você prefere usar yarn.lock ou não versionar o lock (menos comum)
+
+# Arquivos específicos do Yarn
+.yarn/
+.pnp.*
+
+# Arquivos de log do Vercel
+.vercel/
+
+# Arquivos de variáveis de ambiente
+.env.production
+.env.development
+.env.local
+.env.test
+.env
