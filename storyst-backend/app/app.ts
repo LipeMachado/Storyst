@@ -25,6 +25,12 @@ app.get('/', (req, res) => {
     res.send('Api is running');
 })
 
+app.use((req, res, next) => {
+    res.status(404).json({
+        message: 'Endpoint não encontrado. Por favor, verifique a URL e tente novamente.'
+    });
+})
+
 // Middleware for handling errors
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error('Erro na API:', err.stack);
