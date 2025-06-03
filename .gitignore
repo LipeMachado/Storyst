@@ -19,9 +19,11 @@ yarn-error.log*
 .env.*.local
 
 # Arquivos de Build e Compilação
-/backend/build/
-/backend/dist/
-/frontend/dist/
+/build/
+/dist/
+/dist/
+storyst-backend/dist/
+storyst-frontend/dist/
 
 # Arquivos de Cache do TypeScript
 *.tsbuildinfo
