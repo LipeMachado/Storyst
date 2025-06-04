@@ -27,7 +27,7 @@ export const authService = {
             }
         })
 
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ customerId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 
         return { user, token }
     },
@@ -47,7 +47,7 @@ export const authService = {
             throw new Error('Invalid credentials');
         }
 
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ customerId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 
         return { user, token }
     }
