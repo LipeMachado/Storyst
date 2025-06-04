@@ -13,6 +13,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
     res.status(error.statusCode).json({
         status: error.status,
         message: error.message,
+        ...(error.errors && { errors: error.errors }),
         ...(process.env.NODE_ENV === 'development' && { stack: error.stack }),
     });
 };
