@@ -9,7 +9,12 @@
     "strict": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@prisma": ["generated/prisma"],
+      "@/*": ["app/*"]
+    }
   },
   "include": ["app/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules", "dist"]
