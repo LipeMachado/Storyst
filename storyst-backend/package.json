@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "node dist/app/app.js",
     "dev": "ts-node app/app.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
