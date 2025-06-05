@@ -158,7 +158,7 @@ const DashboardPage: React.FC = () => {
 
         <div>
           <h2 className="text-2xl font-bold text-green-700 mb-4">Histórico de Vendas</h2>
-          <div className="space-y-6">
+          <div className="space-y-6 flex flex-col gap-20">
             <div className="w-full h-[500px]">
               <DailySalesChart statistics={dailyStats} />
             </div>
