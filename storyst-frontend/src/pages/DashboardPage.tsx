@@ -81,7 +81,7 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-4 md:p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <h1 className="text-3xl font-bold text-green-700">
@@ -159,7 +159,9 @@ const DashboardPage: React.FC = () => {
         <div>
           <h2 className="text-2xl font-bold text-green-700 mb-4">Histórico de Vendas</h2>
           <div className="space-y-6">
-            <DailySalesChart statistics={dailyStats} />
+            <div className="w-full h-[500px]">
+              <DailySalesChart statistics={dailyStats} />
+            </div>
             <DailySalesTable statistics={dailyStats} />
           </div>
         </div>

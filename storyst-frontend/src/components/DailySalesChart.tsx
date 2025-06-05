@@ -43,46 +43,44 @@ const DailySalesChart: React.FC<DailySalesChartProps> = ({ statistics }) => {
         <CardTitle>Vendas Diárias</CardTitle>
         <CardDescription>Visualização gráfica das vendas por dia</CardDescription>
       </CardHeader>
-      <CardContent className="pt-4">
+      <CardContent className="pt-4 h-full">
         {chartData.length > 0 ? (
-          <ChartContainer config={chartConfig}>
-            <div style={{ width: '822px', height: '462px', margin: '0 auto' }}>
-              <BarChart 
-                width={822}
-                height={462}
-                data={chartData} 
-                margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
-                barSize={40}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
-                <XAxis 
-                  dataKey="date" 
-                  tickLine={false}
-                  axisLine={true}
-                  tickMargin={8}
-                  height={30}
-                  stroke="var(--muted-foreground)"
-                  fontSize={10}
-                  interval="preserveStartEnd"
-                />
-                <YAxis 
-                  tickFormatter={formatYAxis}
-                  tickLine={false}
-                  axisLine={true}
-                  tickMargin={5}
-                  width={40}
-                  stroke="var(--muted-foreground)"
-                  fontSize={10}
-                />
-                <ChartTooltip content={<CustomTooltip />} />
-                <Bar 
-                  dataKey="vendas" 
-                  fill="var(--primary)" 
-                  radius={[4, 4, 0, 0]} 
-                  maxBarSize={36}
-                />
-              </BarChart>
-            </div>
+          <ChartContainer config={chartConfig} className="h-[400px] w-full">
+            <BarChart 
+              data={chartData} 
+              margin={{ top: 10, right: 10, left: 10, bottom: 20 }}
+              barSize={30}
+              width={undefined}
+              height={undefined}
+            >
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+              <XAxis 
+                dataKey="date" 
+                tickLine={false}
+                axisLine={true}
+                tickMargin={8}
+                height={30}
+                stroke="var(--muted-foreground)"
+                fontSize={10}
+                interval="preserveStartEnd"
+              />
+              <YAxis 
+                tickFormatter={formatYAxis}
+                tickLine={false}
+                axisLine={true}
+                tickMargin={5}
+                width={40}
+                stroke="var(--muted-foreground)"
+                fontSize={10}
+              />
+              <ChartTooltip content={<CustomTooltip />} />
+              <Bar 
+                dataKey="vendas" 
+                fill="var(--primary)" 
+                radius={[4, 4, 0, 0]} 
+                maxBarSize={36}
+              />
+            </BarChart>
           </ChartContainer>
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -94,7 +92,7 @@ const DailySalesChart: React.FC<DailySalesChartProps> = ({ statistics }) => {
   );
 };
 
-const CustomTooltip = ({ active, payload }: any) => {
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: { value: number; payload: { date: string } }[] }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
