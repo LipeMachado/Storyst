@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { Bar, BarChart, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import type { DailySalesStatistic } from '@/api/statisticsService';
@@ -43,11 +43,13 @@ const DailySalesChart: React.FC<DailySalesChartProps> = ({ statistics }) => {
         <CardTitle>Vendas Diárias</CardTitle>
         <CardDescription>Visualização gráfica das vendas por dia</CardDescription>
       </CardHeader>
-      <CardContent className=" pt-4">
+      <CardContent className="pt-4">
         {chartData.length > 0 ? (
           <ChartContainer config={chartConfig}>
-            <ResponsiveContainer width="100%" height="100%">
+            <div style={{ width: '822px', height: '462px', margin: '0 auto' }}>
               <BarChart 
+                width={822}
+                height={462}
                 data={chartData} 
                 margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
                 barSize={40}
@@ -80,7 +82,7 @@ const DailySalesChart: React.FC<DailySalesChartProps> = ({ statistics }) => {
                   maxBarSize={36}
                 />
               </BarChart>
-            </ResponsiveContainer>
+            </div>
           </ChartContainer>
         ) : (
           <div className="flex h-full items-center justify-center">
