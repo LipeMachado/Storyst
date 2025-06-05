@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import LoginPage from '@/pages/LoginPage';
 import DashboardPage from '@/pages/DashboardPage';
 import RegisterPage from '@/pages/RegisterPage';
+import CustomersPage from '@/pages/CustomersPage';
 import ProtectedRoute from './ProtectedRoute';
 import PublicOnlyRoute from './PublicOnlyRoute';
 
@@ -32,6 +33,15 @@ const AppRoutes: React.FC = () => {
           <PublicOnlyRoute>
             <RegisterPage />
           </PublicOnlyRoute>
+        }
+      />
+      
+      <Route
+        path="/customers"
+        element={
+          <ProtectedRoute>
+            <CustomersPage />
+          </ProtectedRoute>
         }
       />
 

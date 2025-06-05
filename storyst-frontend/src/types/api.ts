@@ -24,3 +24,20 @@ export interface DashboardResponse {
     activeCustomers: number;
   };
 }
+
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  birth_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CustomerResponse {
+  status: string;
+  results: number;
+  data: {
+    customers: Customer[];
+  };
+}

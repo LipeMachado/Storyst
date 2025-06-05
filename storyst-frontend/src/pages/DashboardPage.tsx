@@ -3,9 +3,11 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import DashboardCard from '@/components/DashboardCard';
 import AddCustomerDialog from '@/components/AddCustomerDialog';
+import { useNavigate } from 'react-router-dom';
 
 const DashboardPage: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -36,6 +38,9 @@ const DashboardPage: React.FC = () => {
       </div>
       <div className="flex gap-4 mt-10">
         <AddCustomerDialog />
+        <Button onClick={() => navigate('/customers')}>
+          Listar Clientes
+        </Button>
         <Button onClick={() => alert('Gerenciar Vendas!')}>
           Gerenciar Vendas
         </Button>
