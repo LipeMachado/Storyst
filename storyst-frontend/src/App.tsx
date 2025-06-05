@@ -5,6 +5,7 @@ import './index.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Toaster } from 'react-hot-toast';
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <AuthProvider>
           <div className="App">
+          <Toaster position="top-right" />
             <AppRoutes />
           </div>
         </AuthProvider>

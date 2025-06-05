@@ -7,37 +7,37 @@ import ProtectedRoute from './ProtectedRoute';
 import PublicOnlyRoute from './PublicOnlyRoute';
 
 const AppRoutes: React.FC = () => {
-    return (
-        <Routes>
-            <Route
-                path="/"
-                element={
-                    <ProtectedRoute>
-                        <DashboardPage />
-                    </ProtectedRoute>
-                }
-            />
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/login"
-                element={
-                    <PublicOnlyRoute>
-                        <LoginPage />
-                    </PublicOnlyRoute>
-                }
-            />
-            <Route
-                path="/register"
-                element={
-                    <PublicOnlyRoute>
-                        <RegisterPage />
-                    </PublicOnlyRoute>
-                }
-            />
+      <Route
+        path="/login"
+        element={
+          <PublicOnlyRoute>
+            <LoginPage />
+          </PublicOnlyRoute>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <PublicOnlyRoute>
+            <RegisterPage />
+          </PublicOnlyRoute>
+        }
+      />
 
-            <Route path="*" element={<div>404 Not Found</div>} />
-        </Routes>
-    );
+      <Route path="*" element={<div>404 Not Found</div>} />
+    </Routes>
+  );
 };
 
 export default AppRoutes;
