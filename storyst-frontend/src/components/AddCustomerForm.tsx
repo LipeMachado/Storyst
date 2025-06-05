@@ -58,9 +58,7 @@ const AddCustomerForm: React.FC<AddCustomerFormProps> = ({ onSuccess }) => {
           
           if (errorMessage === 'User already exists') {
             errorMessage = 'Este email já está cadastrado. Por favor, use outro email.';
-            // Definir erro específico para o campo de email
             setEmailError(errorMessage);
-            // Focar no campo de email para que o usuário possa corrigi-lo
             form.setFocus('email');
             toast.error(errorMessage);
           } else {
@@ -94,7 +92,7 @@ const AddCustomerForm: React.FC<AddCustomerFormProps> = ({ onSuccess }) => {
           placeholder="cliente@exemplo.com" 
           {...form.register('email')} 
           className={emailError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}
-          onChange={() => emailError && setEmailError(null)} // Limpar erro quando o usuário começar a digitar
+          onChange={() => emailError && setEmailError(null)}
         />
         {form.formState.errors.email && <p className="text-red-500 text-sm mt-1">{form.formState.errors.email.message}</p>}
         {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}

@@ -37,7 +37,6 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
         setLoading(true);
         const customer = await getCustomerById(customerId);
         
-        // Formatar a data para o formato esperado pelo input type="date"
         const birthDate = customer.birth_date.split('T')[0];
         
         form.reset({
@@ -115,7 +114,7 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
           placeholder="cliente@exemplo.com" 
           {...form.register('email')} 
           className={emailError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}
-          onChange={() => emailError && setEmailError(null)} // Limpar erro quando o usuário começar a digitar
+          onChange={() => emailError && setEmailError(null)}
         />
         {form.formState.errors.email && <p className="text-red-500 text-sm mt-1">{form.formState.errors.email.message}</p>}
         {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
