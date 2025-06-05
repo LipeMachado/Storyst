@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import CustomerList from '@/components/CustomerList';
 import AddCustomerDialog from '@/components/AddCustomerDialog';
@@ -70,7 +70,7 @@ const CustomersPage: React.FC = () => {
     <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <h1 className="text-3xl font-bold text-green-700">Gerenciamento de Clientes</h1>
+          <Link to="/" className="text-3xl font-bold text-green-700">Gerenciamento de Clientes</Link>
           <div className="flex flex-col md:flex-row items-center justify-center gap-2">
             <AddCustomerDialog />
             <Button onClick={() => navigate('/')}>
