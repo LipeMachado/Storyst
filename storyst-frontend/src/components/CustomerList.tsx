@@ -36,6 +36,9 @@ const CustomerList: React.FC<CustomerListProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const customersPerPage = 6;
 
   const fetchCustomers = async () => {
     setLoading(true);
@@ -43,6 +46,7 @@ const CustomerList: React.FC<CustomerListProps> = ({
     try {
       const data = await getCustomers();
       setCustomers(data);
+      setCurrentPage(1);
     } catch (err) {
       setError('Erro ao carregar clientes. Tente novamente.');
       console.error('Erro ao buscar clientes:', err);
@@ -72,7 +76,6 @@ const CustomerList: React.FC<CustomerListProps> = ({
     }
   };
 
-  // Função para verificar se um cliente é considerado "top"
   const getCustomerTopStatus = (customerId: string) => {
     const statuses = [];
     
@@ -107,6 +110,17 @@ const CustomerList: React.FC<CustomerListProps> = ({
     }
     
     return statuses;
+  };
+
+  const totalPages = Math.ceil(customers.length / customersPerPage);
+  
+  const currentCustomers = customers.slice(
+    (currentPage - 1) * customersPerPage,
+    currentPage * customersPerPage
+  );
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
   };
 
   if (loading) {
@@ -160,14 +174,14 @@ const CustomerList: React.FC<CustomerListProps> = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {customers.length === 0 ? (
+            {currentCustomers.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8">
                   Nenhum cliente cadastrado.
                 </TableCell>
               </TableRow>
             ) : (
-              customers.map((customer) => {
+              currentCustomers.map((customer) => {
                 const topStatuses = getCustomerTopStatus(customer.id);
                 
                 return (
@@ -234,6 +248,89 @@ const CustomerList: React.FC<CustomerListProps> = ({
             )}
           </TableBody>
         </Table>
+        
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center mt-4 gap-2 flex-wrap">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => goToPage(1)} 
+              disabled={currentPage === 1}
+              className="hidden sm:inline-flex"
+            >
+              Primeira
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => goToPage(currentPage - 1)} 
+              disabled={currentPage === 1}
+            >
+              Anterior
+            </Button>
+            
+            <div className="flex items-center gap-1 flex-wrap justify-center">
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(page => {
+                  if (window.innerWidth < 640) {
+                    return page === 1 || page === totalPages || 
+                           (page >= currentPage - 1 && page <= currentPage + 1);
+                  }
+                  return page === 1 || page === totalPages || 
+                         (page >= currentPage - 2 && page <= currentPage + 2);
+                })
+                .map(page => (
+                  <React.Fragment key={page}>
+                    {page > 1 && 
+                     ((window.innerWidth < 640 && page === currentPage - 1 && currentPage > 2) ||
+                      (window.innerWidth >= 640 && page === currentPage - 2 && currentPage > 3)) && 
+                      <span className="px-2">...</span>
+                    }
+                    
+                    <Button 
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => goToPage(page)}
+                      className="w-8 h-8 p-0"
+                    >
+                      {page}
+                    </Button>
+                    
+                    {page < totalPages && 
+                     ((window.innerWidth < 640 && page === currentPage + 1 && currentPage < totalPages - 1) ||
+                      (window.innerWidth >= 640 && page === currentPage + 2 && currentPage < totalPages - 2)) && 
+                      <span className="px-2">...</span>
+                    }
+                  </React.Fragment>
+                ))
+              }
+            </div>
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => goToPage(currentPage + 1)} 
+              disabled={currentPage === totalPages}
+            >
+              Próxima
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => goToPage(totalPages)} 
+              disabled={currentPage === totalPages}
+              className="hidden sm:inline-flex"
+            >
+              Última
+            </Button>
+          </div>
+        )}
+        
+        {totalPages > 1 && (
+          <div className="text-center text-sm text-muted-foreground mt-2">
+            Página {currentPage} de {totalPages}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

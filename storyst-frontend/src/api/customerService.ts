@@ -34,15 +34,23 @@ export const getCustomers = async (): Promise<Customer[]> => {
   try {
     try {
       const response = await axiosInstance.get<CustomerResponse>('/customers');
-      return response.data.data.customers;
-    } catch (formatError) {
+      if (response?.data?.data?.customers && Array.isArray(response.data.data.customers)) {
+        return response.data.data.customers;
+      }
+      throw new Error('Formato de resposta inválido');
+    } catch {
       const complexResponse = await axiosInstance.get<ComplexCustomerResponse>('/customers');
+      
+      if (!complexResponse?.data?.data?.clientes) {
+        throw new Error('Dados de clientes não encontrados na resposta');
+      }
+      
       const normalizedData = normalizeCustomerData(complexResponse.data);
       return normalizedData.data.customers;
     }
   } catch (error) {
     console.error('Erro ao buscar clientes:', error);
-    throw error;
+    return [];
   }
 };
 

@@ -53,25 +53,42 @@ const AddCustomerForm: React.FC<AddCustomerFormProps> = ({ onSuccess }) => {
       let errorMessage = 'Ocorreu um erro desconhecido.';
 
       if (isAxiosError(error)) {
-        if (error.response?.data && typeof error.response.data === 'object' && 'message' in error.response.data) {
-          errorMessage = (error.response.data as { message: string }).message;
+        form.reset({ ...data }, { keepValues: true, keepErrors: true, keepDirty: true, keepIsSubmitted: false, keepTouched: true, keepIsValid: true, keepSubmitCount: true });
+        
+        if (error.response?.data) {
+          const responseData = error.response.data;
           
-          if (errorMessage === 'User already exists') {
-            errorMessage = 'Este email já está cadastrado. Por favor, use outro email.';
+          if (error.response.status === 409) {
+            if (responseData.errors && Array.isArray(responseData.errors)) {
+              const emailErrorObj = responseData.errors.find((err: { path: string | string[] }) =>
+                err.path === 'email' || (Array.isArray(err.path) && err.path.includes('email'))
+              );
+              
+              if (emailErrorObj) {
+                errorMessage = emailErrorObj.message;
+              } else {
+                errorMessage = responseData.message || 'Este email já está cadastrado';
+              }
+            } else {
+              errorMessage = responseData.message || 'Este email já está cadastrado';
+            }
+            
             setEmailError(errorMessage);
             form.setFocus('email');
-            toast.error(errorMessage);
-          } else {
-            toast.error(errorMessage);
+          } else if (typeof responseData === 'object' && 'message' in responseData) {
+            errorMessage = responseData.message as string;
           }
         } else if (error.message) {
           errorMessage = error.message;
-          toast.error(errorMessage);
         }
+        
+        toast.error(errorMessage);
       } else if (error instanceof Error) {
+        form.reset({ ...data }, { keepValues: true, keepErrors: true, keepDirty: true, keepIsSubmitted: false, keepTouched: true, keepIsValid: true, keepSubmitCount: true });
         errorMessage = error.message;
         toast.error(errorMessage);
       } else {
+        form.reset({ ...data }, { keepValues: true, keepErrors: true, keepDirty: true, keepIsSubmitted: false, keepTouched: true, keepIsValid: true, keepSubmitCount: true });
         toast.error(errorMessage);
       }
     }
@@ -88,7 +105,7 @@ const AddCustomerForm: React.FC<AddCustomerFormProps> = ({ onSuccess }) => {
         <Label htmlFor="email">Email</Label>
         <Input 
           id="email" 
-          type="email" 
+          type="email"
           placeholder="cliente@exemplo.com" 
           {...form.register('email')} 
           className={emailError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}

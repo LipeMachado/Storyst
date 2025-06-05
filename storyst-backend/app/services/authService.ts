@@ -1,6 +1,7 @@
 import prisma from "../config/prisma";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import ApiError from "../utils/ApiError";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -16,7 +17,9 @@ export const authService = {
     });
 
     if (existingUser) {
-      throw new Error("User already exists");
+      throw new ApiError(409, "Email já cadastrado", [
+        { path: "email", message: "Este email já está em uso. Por favor, use outro email." }
+      ]);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
