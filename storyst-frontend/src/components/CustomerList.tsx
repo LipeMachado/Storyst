@@ -15,12 +15,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import toast from 'react-hot-toast';
 import { formatDate, findFirstMissingLetter } from '@/lib/utils';
 import EditCustomerDialog from './EditCustomerDialog';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import type { TopVolumeCustomer, TopAverageValueCustomer, TopFrequencyCustomer } from '@/api/statisticsService';
 
 interface CustomerListProps {
   onRefresh?: () => void;
+  topVolumeCustomer?: TopVolumeCustomer | null;
+  topAvgCustomer?: TopAverageValueCustomer | null;
+  topFreqCustomer?: TopFrequencyCustomer | null;
 }
 
-const CustomerList: React.FC<CustomerListProps> = ({ onRefresh }) => {
+const CustomerList: React.FC<CustomerListProps> = ({ 
+  onRefresh, 
+  topVolumeCustomer, 
+  topAvgCustomer, 
+  topFreqCustomer 
+}) => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,6 +70,43 @@ const CustomerList: React.FC<CustomerListProps> = ({ onRefresh }) => {
         setIsDeleting(null);
       }
     }
+  };
+
+  // Função para verificar se um cliente é considerado "top"
+  const getCustomerTopStatus = (customerId: string) => {
+    const statuses = [];
+    
+    if (topVolumeCustomer?.customer.id === customerId) {
+      statuses.push({
+        type: 'volume',
+        label: 'Maior Volume',
+        description: `Cliente com maior volume total de vendas: ${topVolumeCustomer.totalSalesVolume.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        })}`
+      });
+    }
+    
+    if (topAvgCustomer?.customer.id === customerId) {
+      statuses.push({
+        type: 'average',
+        label: 'Maior Média',
+        description: `Cliente com maior valor médio por venda: ${topAvgCustomer.averageSaleValue.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        })}`
+      });
+    }
+    
+    if (topFreqCustomer?.customer.id === customerId) {
+      statuses.push({
+        type: 'frequency',
+        label: 'Maior Frequência',
+        description: `Cliente com maior número de compras: ${topFreqCustomer.purchaseCount} compras`
+      });
+    }
+    
+    return statuses;
   };
 
   if (loading) {
@@ -112,33 +160,70 @@ const CustomerList: React.FC<CustomerListProps> = ({ onRefresh }) => {
                 </TableCell>
               </TableRow>
             ) : (
-              customers.map((customer) => (
-                <TableRow key={customer.id}>
-                  <TableCell className="font-medium">{customer.name}</TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>{formatDate(customer.birth_date)}</TableCell>
-                  <TableCell>{formatDate(customer.created_at)}</TableCell>
-                  <TableCell className="text-center font-bold">
-                    {findFirstMissingLetter(customer.name)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <EditCustomerDialog 
-                        customerId={customer.id} 
-                        onSuccess={fetchCustomers}
-                      />
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDelete(customer.id)}
-                        disabled={isDeleting === customer.id}
-                      >
-                        {isDeleting === customer.id ? 'Excluindo...' : 'Excluir'}
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+              customers.map((customer) => {
+                const topStatuses = getCustomerTopStatus(customer.id);
+                
+                return (
+                  <TableRow key={customer.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {customer.name}
+                        {topStatuses.length > 0 && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex gap-1">
+                                  {topStatuses.map((status, index) => (
+                                    <Badge 
+                                      key={index} 
+                                      className={`
+                                        ${status.type === 'volume' ? 'bg-green-600 hover:bg-green-700' : ''}
+                                        ${status.type === 'average' ? 'bg-blue-600 hover:bg-blue-700' : ''}
+                                        ${status.type === 'frequency' ? 'bg-purple-600 hover:bg-purple-700' : ''}
+                                      `}
+                                    >
+                                      {status.label}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <div className="space-y-1">
+                                  {topStatuses.map((status, index) => (
+                                    <p key={index}>{status.description}</p>
+                                  ))}
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>{customer.email}</TableCell>
+                    <TableCell>{formatDate(customer.birth_date)}</TableCell>
+                    <TableCell>{formatDate(customer.created_at)}</TableCell>
+                    <TableCell className="text-center font-bold">
+                      {findFirstMissingLetter(customer.name)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <EditCustomerDialog 
+                          customerId={customer.id} 
+                          onSuccess={fetchCustomers}
+                        />
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDelete(customer.id)}
+                          disabled={isDeleting === customer.id}
+                        >
+                          {isDeleting === customer.id ? 'Excluindo...' : 'Excluir'}
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
