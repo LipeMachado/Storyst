@@ -1,4 +1,6 @@
 import axiosInstance from './axiosInstance';
+import { normalizeCustomerData } from './customerNormalizer';
+import type { ComplexCustomerResponse } from './customerNormalizer';
 
 export interface Customer {
   id: string;
@@ -24,8 +26,14 @@ export interface DeleteCustomerResponse {
 
 export const getCustomers = async (): Promise<Customer[]> => {
   try {
-    const response = await axiosInstance.get<CustomerResponse>('/customers');
-    return response.data.data.customers;
+    try {
+      const response = await axiosInstance.get<CustomerResponse>('/customers');
+      return response.data.data.customers;
+    } catch (formatError) {
+      const complexResponse = await axiosInstance.get<ComplexCustomerResponse>('/customers');
+      const normalizedData = normalizeCustomerData(complexResponse.data);
+      return normalizedData.data.customers;
+    }
   } catch (error) {
     console.error('Erro ao buscar clientes:', error);
     throw error;

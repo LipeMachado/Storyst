@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import toast from 'react-hot-toast';
-import { formatDate } from '@/lib/utils';
+import { formatDate, findFirstMissingLetter } from '@/lib/utils';
 
 interface CustomerListProps {
   onRefresh?: () => void;
@@ -99,13 +99,14 @@ const CustomerList: React.FC<CustomerListProps> = ({ onRefresh }) => {
               <TableHead>Email</TableHead>
               <TableHead>Data de Nascimento</TableHead>
               <TableHead>Data de Cadastro</TableHead>
+              <TableHead>Letra Ausente</TableHead>
               <TableHead className="text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {customers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8">
+                <TableCell colSpan={6} className="text-center py-8">
                   Nenhum cliente cadastrado.
                 </TableCell>
               </TableRow>
@@ -116,6 +117,9 @@ const CustomerList: React.FC<CustomerListProps> = ({ onRefresh }) => {
                   <TableCell>{customer.email}</TableCell>
                   <TableCell>{formatDate(customer.birth_date)}</TableCell>
                   <TableCell>{formatDate(customer.created_at)}</TableCell>
+                  <TableCell className="text-center font-bold">
+                    {findFirstMissingLetter(customer.name)}
+                  </TableCell>
                   <TableCell className="text-right">
                     <Button
                       variant="destructive"

@@ -20,3 +20,20 @@ export function formatDate(dateString: string): string {
     return dateString;
   }
 }
+
+export function findFirstMissingLetter(name: string): string {
+  if (!name) return 'a';
+  
+  const normalizedName = name.toLowerCase().replace(/[^a-z]/g, '');
+  
+  const presentLetters = new Set(normalizedName.split(''));
+  
+  for (let charCode = 97; charCode <= 122; charCode++) {
+    const letter = String.fromCharCode(charCode);
+    if (!presentLetters.has(letter)) {
+      return letter;
+    }
+  }
+  
+  return '-';
+}
