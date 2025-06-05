@@ -87,12 +87,12 @@ const DashboardPage: React.FC = () => {
           <h1 className="text-3xl font-bold text-green-700">
             Bem-vindo ao Dashboard, {user.name}!
           </h1>
-          <div className="flex flex-col md:flex-row gap-2">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2">
             <AddCustomerDialog />
             <Button onClick={() => navigate('/customers')}>
               Listar Clientes
             </Button>
-            <Button variant="destructive" onClick={logout} size="sm">
+            <Button variant="destructive" onClick={logout}>
               Sair
             </Button>
           </div>
