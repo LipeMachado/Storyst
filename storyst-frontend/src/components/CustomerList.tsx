@@ -137,7 +137,14 @@ const CustomerList: React.FC<CustomerListProps> = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Lista de Clientes</CardTitle>
+        <CardTitle className='flex justify-between items-center'>
+          <span>
+            Lista de Clientes
+          </span>
+          <Button onClick={fetchCustomers} variant="outline" size="sm">
+            Atualizar Lista
+          </Button>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -227,11 +234,6 @@ const CustomerList: React.FC<CustomerListProps> = ({
             )}
           </TableBody>
         </Table>
-        <div className="mt-4 flex justify-end">
-          <Button onClick={fetchCustomers} variant="outline" size="sm">
-            Atualizar Lista
-          </Button>
-        </div>
       </CardContent>
     </Card>
   );
