@@ -14,11 +14,7 @@ const DashboardPage: React.FC = () => {
         );
     }
 
-    // Se não autenticado ou sem dados de usuário (o que pode acontecer se o token for inválido)
-    // ProtectedRoute já redireciona para /login, então esse bloco pode ser mais um fallback ou para exibir uma mensagem específica.
     if (!isAuthenticated || !user) {
-        // Redirecionamento já ocorre no ProtectedRoute, mas se quiser uma mensagem aqui
-        // antes do redirecionamento acontecer, ou para um caso de erro improvável.
         return (
             <div className="min-h-screen flex flex-col items-center justify-center p-8">
                 <p className="text-xl text-red-500 mb-4">Acesso negado. Por favor, faça login.</p>
@@ -28,7 +24,7 @@ const DashboardPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-gray-100">
+        <div className="min-h-screen flex flex-col items-center justify-center p-8">
             <h1 className="text-4xl font-bold text-green-700 mb-8">
                 Bem-vindo ao Dashboard, {user.name}!
             </h1>
