@@ -24,6 +24,12 @@ export interface DeleteCustomerResponse {
   message: string;
 }
 
+export interface UpdateCustomerData {
+  name?: string;
+  email?: string;
+  birth_date?: string;
+}
+
 export const getCustomers = async (): Promise<Customer[]> => {
   try {
     try {
@@ -36,6 +42,26 @@ export const getCustomers = async (): Promise<Customer[]> => {
     }
   } catch (error) {
     console.error('Erro ao buscar clientes:', error);
+    throw error;
+  }
+};
+
+export const getCustomerById = async (id: string): Promise<Customer> => {
+  try {
+    const response = await axiosInstance.get<{status: string; data: {customer: Customer}}>(`/customers/${id}`);
+    return response.data.data.customer;
+  } catch (error) {
+    console.error(`Erro ao buscar cliente ${id}:`, error);
+    throw error;
+  }
+};
+
+export const updateCustomer = async (id: string, data: UpdateCustomerData): Promise<Customer> => {
+  try {
+    const response = await axiosInstance.put<{status: string; data: {customer: Customer}}>(`/customers/${id}`, data);
+    return response.data.data.customer;
+  } catch (error) {
+    console.error(`Erro ao atualizar cliente ${id}:`, error);
     throw error;
   }
 };

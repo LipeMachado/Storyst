@@ -14,6 +14,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import toast from 'react-hot-toast';
 import { formatDate, findFirstMissingLetter } from '@/lib/utils';
+import EditCustomerDialog from './EditCustomerDialog';
 
 interface CustomerListProps {
   onRefresh?: () => void;
@@ -121,14 +122,20 @@ const CustomerList: React.FC<CustomerListProps> = ({ onRefresh }) => {
                     {findFirstMissingLetter(customer.name)}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(customer.id)}
-                      disabled={isDeleting === customer.id}
-                    >
-                      {isDeleting === customer.id ? 'Excluindo...' : 'Excluir'}
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                      <EditCustomerDialog 
+                        customerId={customer.id} 
+                        onSuccess={fetchCustomers}
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(customer.id)}
+                        disabled={isDeleting === customer.id}
+                      >
+                        {isDeleting === customer.id ? 'Excluindo...' : 'Excluir'}
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
