@@ -3,7 +3,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN mkdir -p generated/prisma
 RUN npx prisma generate
 RUN npx tsc
 EXPOSE 3001
-CMD ["node", "dist/app.js"]
+CMD ["node", "dist/app/app.js"]
