@@ -6,5 +6,6 @@ COPY . .
 RUN mkdir -p generated/prisma
 RUN npx prisma generate
 RUN npx tsc
+RUN mkdir -p dist/generated && cp -r generated/prisma dist/generated/
 EXPOSE 3001
-CMD ["node", "dist/app/app.js"]
+CMD ["node", "-r", "tsconfig-paths/register", "dist/app/app.js"]

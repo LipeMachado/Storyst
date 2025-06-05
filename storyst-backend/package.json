@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/app/app.js",
+    "start": "node -r tsconfig-paths/register dist/app/app.js",
     "dev": "ts-node app/app.ts",
     "build": "prisma generate && tsc",
     "test": "jest --runInBand",
@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.0",
     "supertest": "^7.1.1",
+    "tsconfig-paths": "^4.2.0",
     "zod": "^3.25.51"
   },
   "devDependencies": {
