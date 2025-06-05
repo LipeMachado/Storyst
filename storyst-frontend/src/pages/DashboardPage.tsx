@@ -8,7 +8,7 @@ const DashboardPage: React.FC = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="min-h-screen flex items-center justify-center">
                 <p className="text-xl text-gray-700">Carregando dashboard...</p>
             </div>
         );
@@ -20,7 +20,7 @@ const DashboardPage: React.FC = () => {
         // Redirecionamento já ocorre no ProtectedRoute, mas se quiser uma mensagem aqui
         // antes do redirecionamento acontecer, ou para um caso de erro improvável.
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-gray-100">
+            <div className="min-h-screen flex flex-col items-center justify-center p-8">
                 <p className="text-xl text-red-500 mb-4">Acesso negado. Por favor, faça login.</p>
                 <Button onClick={() => logout()}>Ir para Login</Button>
             </div>
