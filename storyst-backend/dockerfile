@@ -1,8 +1,8 @@
 FROM node:22-alpine
 WORKDIR /app
-COPY storyst-backend/package*.json ./
+COPY package*.json ./
 RUN npm install
-COPY storyst-backend/ .
+COPY . .
 RUN mkdir -p generated/prisma
 RUN npx prisma generate
 RUN npx tsc
