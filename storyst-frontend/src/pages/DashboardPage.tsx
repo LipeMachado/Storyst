@@ -26,7 +26,48 @@ const DashboardPage: React.FC = () => {
   const [topAvgCustomer, setTopAvgCustomer] = useState<TopAverageValueCustomer | null>(null);
   const [topFreqCustomer, setTopFreqCustomer] = useState<TopFrequencyCustomer | null>(null);
   const [statsLoading, setStatsLoading] = useState<boolean>(true);
+  const [salesGrowth, setSalesGrowth] = useState<number | null>(null);
 
+  const calculateSalesGrowth = (salesData: DailySalesStatistic[]) => {
+    if (!salesData || salesData.length === 0) return null;
+    
+    const sortedData = [...salesData].sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    
+    const latestDate = new Date(sortedData[0].date);
+    
+    const currentPeriodEnd = new Date(latestDate);
+    const currentPeriodStart = new Date(latestDate);
+    currentPeriodStart.setDate(currentPeriodStart.getDate() - 30);
+    
+    const previousPeriodEnd = new Date(currentPeriodStart);
+    previousPeriodEnd.setDate(previousPeriodEnd.getDate() - 1);
+    const previousPeriodStart = new Date(previousPeriodEnd);
+    previousPeriodStart.setDate(previousPeriodStart.getDate() - 30);
+    
+    const currentPeriodSales = sortedData
+      .filter(sale => {
+        const saleDate = new Date(sale.date);
+        return saleDate >= currentPeriodStart && saleDate <= currentPeriodEnd;
+      })
+      .reduce((total, sale) => total + sale.totalSales, 0);
+    
+    const previousPeriodSales = sortedData
+      .filter(sale => {
+        const saleDate = new Date(sale.date);
+        return saleDate >= previousPeriodStart && saleDate <= previousPeriodEnd;
+      })
+      .reduce((total, sale) => total + sale.totalSales, 0);
+    
+    if (previousPeriodSales === 0) {
+      return currentPeriodSales > 0 ? 100 : 0;
+    }
+    
+    const growthRate = ((currentPeriodSales - previousPeriodSales) / previousPeriodSales) * 100;
+    return Math.round(growthRate);
+  };
+  
   const fetchStatistics = async () => {
     setStatsLoading(true);
     try {
@@ -41,6 +82,9 @@ const DashboardPage: React.FC = () => {
       setTopVolumeCustomer(volumeData);
       setTopAvgCustomer(avgData);
       setTopFreqCustomer(freqData);
+      
+      const growth = calculateSalesGrowth(dailyData);
+      setSalesGrowth(growth);
     } catch (err) {
       console.error('Erro ao buscar estatísticas:', err);
       toast.error('Erro ao buscar estatísticas. Tente novamente mais tarde.');
@@ -169,8 +213,23 @@ const DashboardPage: React.FC = () => {
             <CardContent>
               <div className="h-[200px] flex items-center justify-center bg-blue-100 rounded-lg">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-500">75%</div>
-                  <div className="text-sm text-blue-700">Crescimento de vendas</div>
+                  {statsLoading ? (
+                    <div className="text-3xl font-bold text-blue-500">Carregando...</div>
+                  ) : salesGrowth !== null ? (
+                    <>
+                      <div className={`text-3xl font-bold ${salesGrowth >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        {salesGrowth >= 0 ? '+' : ''}{salesGrowth}%
+                      </div>
+                      <div className="text-sm text-blue-700">Crescimento de vendas</div>
+                      <div className="text-xs text-gray-500 mt-1">Últimos 30 dias vs período anterior</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-3xl font-bold text-blue-500">N/A</div>
+                      <div className="text-sm text-blue-700">Crescimento de vendas</div>
+                      <div className="text-xs text-gray-500 mt-1">Dados insuficientes</div>
+                    </>
+                  )}
                 </div>
               </div>
             </CardContent>
