@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 const customerSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('Email inválido'),
-  birthDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/, 'Adicione uma data de nascimento'),
+  birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Adicione uma data de nascimento'),
   password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
   confirmPassword: z.string().min(1, 'Confirme sua senha')
 }).refine((data) => data.password === data.confirmPassword, {
@@ -116,7 +116,7 @@ const AddCustomerForm: React.FC<AddCustomerFormProps> = ({ onSuccess }) => {
       </div>
       <div className="space-y-2">
         <Label htmlFor="birthDate">Data de Nascimento</Label>
-        <Input id="birthDate" type="date" {...form.register('birthDate')} />
+        <Input id="birthDate" type="text" placeholder="DD-MM-YYYY" {...form.register('birthDate')} />
         {form.formState.errors.birthDate && <p className="text-red-500 text-sm mt-1">{form.formState.errors.birthDate.message}</p>}
       </div>
       <div className="space-y-2">

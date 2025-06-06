@@ -41,19 +41,18 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
         if (customer.birth_date) {
           if (typeof customer.birth_date === 'string') {
             const isoDate = customer.birth_date.split('T')[0];
+            birthDate = isoDate;
             
-            const date = new Date(isoDate);
+            console.log('Data ISO extraída:', isoDate);
+          } else if (typeof customer.birth_date === 'object') {
+            console.log('Data de nascimento recebida como objeto:', customer.birth_date);
+            birthDate = '';
+          }
+            const date = new Date(birthDate);
             
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
-            birthDate = `${year}-${month}-${day}`;
-          } else if (typeof customer.birth_date === 'object') {
-            const today = new Date();
-            today.setDate(today.getDate() - 1);
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
             birthDate = `${year}-${month}-${day}`;
         }
 
@@ -62,8 +61,7 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
           email: customer.email,
           birthDate: birthDate
         });
-      }
-    } catch (error) {
+      } catch (error) {
         toast.error('Erro ao carregar dados do cliente');
         console.error('Erro ao carregar cliente:', error);
       } finally {
