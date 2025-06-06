@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 const customerEditSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('Email inválido'),
-  birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Adicione uma data de nascimento'),
+  birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Adicione uma data de nascimento').optional().or(z.literal('')),
 });
 
 export type CustomerEditFormData = z.infer<typeof customerEditSchema>;
