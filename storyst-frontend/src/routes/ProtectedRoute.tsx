@@ -10,7 +10,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Carregando autenticação...</div>;
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-lg text-accent-foreground">Buscando os dados para você...</p>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
