@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 const customerSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('Email inválido'),
-  birthDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/, 'Formato de data inválido (DD-MM-AAAA)'),
+  birthDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/, 'Adicione uma data de nascimento'),
   password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
   confirmPassword: z.string().min(1, 'Confirme sua senha')
 }).refine((data) => data.password === data.confirmPassword, {

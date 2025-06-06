@@ -17,7 +17,7 @@ const registerSchema = z.object({
     email: z.string().email('Email inválido'),
     password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
     confirmPassword: z.string(),
-    birthDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/, 'Formato de data inválido (DD-MM-AAAA)'),
+    birthDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/, 'Adicione uma data de nascimento'),
 }).refine((data) => data.password === data.confirmPassword, {
     message: 'As senhas não coincidem',
     path: ['confirmPassword'],
