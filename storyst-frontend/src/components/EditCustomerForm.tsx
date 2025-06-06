@@ -43,9 +43,7 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
             const isoDate = customer.birth_date.split('T')[0];
             birthDate = isoDate;
             
-            console.log('Data ISO extraída:', isoDate);
           } else if (typeof customer.birth_date === 'object') {
-            console.log('Data de nascimento recebida como objeto:', customer.birth_date);
             birthDate = '';
           }
             const date = new Date(birthDate);
