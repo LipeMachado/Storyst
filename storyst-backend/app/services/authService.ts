@@ -46,7 +46,7 @@ export const authService = {
     });
 
     if (!user) {
-      return { error: "Email ou senha inválidos" }
+      return { error: "Email esta incorreto" }
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
