@@ -45,9 +45,7 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
             date.setDate(date.getDate() - 1);
             birthDate = date.toISOString().split('T')[0];
           } else if (typeof customer.birth_date === 'object') {
-            if (Object.keys(customer.birth_date).length === 0) {
-              birthDate = '';
-            }
+            birthDate = '';
           }
         }
 
