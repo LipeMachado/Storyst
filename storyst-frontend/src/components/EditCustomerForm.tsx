@@ -38,8 +38,13 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
         const customer = await getCustomerById(customerId);
 
         let birthDate = '';
-        if (customer.birth_date && typeof customer.birth_date === 'string') {
-          birthDate = customer.birth_date.split('T')[0];
+        if (customer.birth_date) {
+          if (typeof customer.birth_date === 'string') {
+            birthDate = customer.birth_date.split('T')[0];
+          } else if (typeof customer.birth_date === 'object' && 
+                    Object.keys(customer.birth_date).length === 0) {
+            console.log('Data de nascimento recebida como objeto vazio:', customer.birth_date);
+          }
         }
 
         form.reset({
