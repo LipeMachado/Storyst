@@ -23,11 +23,18 @@ export const getAllCustomers = catchAsync(async (req: Request, res: Response) =>
         });
     }
 
+    const serializedCustomers = customers.map(customer => ({
+        ...customer,
+        birth_date: customer.birth_date.toISOString(),
+        created_at: customer.created_at.toISOString(),
+        updated_at: customer.updated_at.toISOString()
+      }));
+
     return res.status(200).json({
         status: 'success',
-        results: customers.length,
+        results: serializedCustomers.length,
         data: {
-            customers
+            serializedCustomers
         }
     });
 })
