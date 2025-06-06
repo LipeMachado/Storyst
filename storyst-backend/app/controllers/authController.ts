@@ -17,13 +17,18 @@ export const authController = {
       });
     }
 
-    const { user, token } = await authService.register(
+    const { user, token, error } = await authService.register(
       email,
       password,
       name,
-      birthDate
+      birthDate,
     );
-    const { password_hash: _, ...userWithoutPassword } = user;
+
+    if (error) {
+      return res.status(409).json({ message: error });
+    }
+
+    const { password_hash: _, ...userWithoutPassword } = user || {};
 
     res.status(201).json({
       message: "User registered successfully",

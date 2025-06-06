@@ -17,9 +17,7 @@ export const authService = {
     });
 
     if (existingUser) {
-      throw new ApiError(409, "Email já cadastrado", [
-        { path: "email", message: "Este email já está em uso. Por favor, use outro email." }
-      ]);
+      return { error: "Email já cadastrado" }
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
