@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 const customerEditSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('Email inválido'),
-  birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Adicione uma data de nascimento').optional().or(z.literal('')),
+  birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Adicione uma data de nascimento'),
 });
 
 export type CustomerEditFormData = z.infer<typeof customerEditSchema>;
@@ -71,18 +71,11 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
     setEmailError(null);
   
     try {
-      const formattedData: {
-        name: string;
-        email: string;
-        birth_date?: string;
-      } = {
+      const formattedData = {
         name: data.name,
-        email: data.email
+        email: data.email,
+        birth_date: data.birthDate
       };
-      
-      if (data.birthDate && data.birthDate.trim() !== '') {
-        formattedData.birth_date = data.birthDate;
-      }
   
       await updateCustomer(customerId, formattedData);
       toast.success('Cliente atualizado com sucesso!');
