@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 const customerEditSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('Email inválido'),
-  birthDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/, 'Adicione uma data de nascimento'),
+  birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Adicione uma data de nascimento'),
 });
 
 export type CustomerEditFormData = z.infer<typeof customerEditSchema>;
@@ -36,37 +36,34 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
       try {
         setLoading(true);
         const customer = await getCustomerById(customerId);
-        console.log('Customer data received:', customer); // Para debug
 
         let birthDate = '';
         if (customer.birth_date) {
-          console.log('Tipo de birth_date:', typeof customer.birth_date, customer.birth_date);
-          
           if (typeof customer.birth_date === 'string') {
-            // Converter de YYYY-MM-DD para DD-MM-YYYY
-            const dateParts = customer.birth_date.split('T')[0].split('-');
-            if (dateParts.length === 3) {
-              birthDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-            }
+            const isoDate = customer.birth_date.split('T')[0];
+            
+            const date = new Date(isoDate);
+            
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            birthDate = `${year}-${month}-${day}`;
           } else if (typeof customer.birth_date === 'object') {
-            console.log('Data de nascimento recebida como objeto:', customer.birth_date);
-            // Tentar usar a data atual como fallback se for um objeto vazio
             const today = new Date();
-            const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0');
+            today.setDate(today.getDate() - 1);
             const year = today.getFullYear();
-            birthDate = `${day}-${month}-${year}`;
-          }
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            birthDate = `${year}-${month}-${day}`;
         }
-
-        console.log('Data de nascimento formatada:', birthDate);
 
         form.reset({
           name: customer.name,
           email: customer.email,
           birthDate: birthDate
         });
-      } catch (error) {
+      }
+    } catch (error) {
         toast.error('Erro ao carregar dados do cliente');
         console.error('Erro ao carregar cliente:', error);
       } finally {
@@ -81,14 +78,14 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
 
   const onSubmit = async (data: CustomerEditFormData) => {
     setEmailError(null);
-
+  
     try {
       const formattedData = {
         name: data.name,
         email: data.email,
         birth_date: data.birthDate
       };
-
+  
       await updateCustomer(customerId, formattedData);
       toast.success('Cliente atualizado com sucesso!');
       onSuccess();
@@ -145,8 +142,7 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
         <Label htmlFor="birthDate">Data de Nascimento</Label>
         <Input 
           id="birthDate" 
-          type="text" 
-          placeholder="DD-MM-YYYY" 
+          type="date" 
           {...form.register('birthDate')} 
         />
         {form.formState.errors.birthDate && <p className="text-red-500 text-sm mt-1">{form.formState.errors.birthDate.message}</p>}
