@@ -116,7 +116,7 @@ const RegisterPage: React.FC = () => {
                         </div>
                         <div>
                             <Label htmlFor="birthDate" className='mb-3'>Data de Nascimento</Label>
-                            <input id="birthDate" type="date" {...form.register('birthDate')} />
+                            <Input id="birthDate" type="date" {...form.register('birthDate')} />
                             {form.formState.errors.birthDate && <p className="text-red-500 text-sm mt-1">{form.formState.errors.birthDate.message}</p>}
                         </div>
                         <div>
