@@ -96,7 +96,7 @@ export const updateCustomer = catchAsync(async (req: Request, res: Response) => 
         data: {
             name: name,
             email: email,
-            birth_date: birth_date ? new Date(birth_date) : undefined,
+            birth_date: birth_date ? new Date(`${birth_date}T12:00:00Z`) : undefined,
             updated_at: new Date(),
         },
         select: {
