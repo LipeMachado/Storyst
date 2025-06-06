@@ -46,7 +46,7 @@ export const authService = {
     });
 
     if (!user) {
-      return { error: "Email esta incorreto" }
+      return { error: "Este email não está cadastrado" }
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
