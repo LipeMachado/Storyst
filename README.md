@@ -84,48 +84,56 @@ A aplicação React foi construída para ser intuitiva e eficiente, lidando com 
 * **Normalização de Dados Complexos:** O frontend é capaz de processar e normalizar estruturas de dados desorganizadas e redundantes retornadas pela API de listagem de clientes, garantindo que apenas informações relevantes sejam exibidas de forma clara.
     ```json
     {
-     "data": {
-     "clientes": [
-     {
-     "info": {
-     "nomeCompleto": "Ana Beatriz",
-     "detalhes": {
-     "email": "ana.b@example.com",
-     "nascimento": "1992-05-01"
-     }
-     },
-     "estatisticas": {
-     "vendas": [
-     { "data": "2024-01-01", "valor": 150 },
-     { "data": "2024-01-02", "valor": 50 }
-     ]
-     }
-     },
-     {
-     "info": {
-     "nomeCompleto": "Carlos Eduardo",
-     "detalhes": {
-     "email": "cadu@example.com",
-     "nascimento": "1987-08-15"
-     }
-     },
-     "duplicado": {
-     "nomeCompleto": "Carlos Eduardo"
-     },
-     "estatisticas": {
-     "vendas": []
-     }
-     }
-     ]
-     },
-     "meta": {
-     "registroTotal": 2,
-     "pagina": 1
-     },
-     "redundante": {
-     "status": "ok"
-     }
-    }
+   "data":{
+      "clientes":[
+         {
+            "info":{
+               "nomeCompleto":"Ana Beatriz",
+               "detalhes":{
+                  "email":"ana.b@example.com",
+                  "nascimento":"1992-05-01"
+               }
+            },
+            "estatisticas":{
+               "vendas":[
+                  {
+                     "data":"2024-01-01",
+                     "valor":150
+                  },
+                  {
+                     "data":"2024-01-02",
+                     "valor":50
+                  }
+               ]
+            }
+         },
+         {
+            "info":{
+               "nomeCompleto":"Carlos Eduardo",
+               "detalhes":{
+                  "email":"cadu@example.com",
+                  "nascimento":"1987-08-15"
+               }
+            },
+            "duplicado":{
+               "nomeCompleto":"Carlos Eduardo"
+            },
+            "estatisticas":{
+               "vendas":[
+                  
+               ]
+            }
+         }
+      ]
+   },
+   "meta":{
+      "registroTotal":2,
+      "pagina":1
+   },
+   "redundante":{
+      "status":"ok"
+   }
+}
     ```
 * **Visualização de Estatísticas:**
     * Exibição de um **gráfico dinâmico** com o total de vendas por dia.
