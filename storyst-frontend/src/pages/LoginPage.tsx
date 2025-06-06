@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -22,12 +22,14 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const LoginPage: React.FC = () => {
     const { login } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
     const form = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
         defaultValues: { email: '', password: '' },
     });
 
     const onSubmit = async (data: LoginFormData) => {
+        setIsLoading(true);
         try {
             const response = await axiosInstance.post<LoginResponse>('/auth/login', data);
             const { token, user } = response.data;
@@ -36,6 +38,8 @@ const LoginPage: React.FC = () => {
             const axiosError = error as AxiosError<{ message: string }>;
             console.error('Erro no login:', axiosError.response?.data?.message || axiosError.message);
             toast.error(`Erro no login: ${axiosError.response?.data?.message || axiosError.message}`);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -50,15 +54,17 @@ const LoginPage: React.FC = () => {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <div>
                             <Label htmlFor="email" className='mb-3'>Email</Label>
-                            <Input id="email" type="email" placeholder="exemplo@gmail.com" {...form.register('email')} />
+                            <Input id="email" type="email" placeholder="exemplo@gmail.com" {...form.register('email')} disabled={isLoading} />
                             {form.formState.errors.email && <p className="text-red-500 text-sm mt-1">{form.formState.errors.email.message}</p>}
                         </div>
                         <div>
                             <Label htmlFor="password" className='mb-3'>Senha</Label>
-                            <Input id="password" type="password" placeholder="******" {...form.register('password')} />
+                            <Input id="password" type="password" placeholder="******" {...form.register('password')} disabled={isLoading} />
                             {form.formState.errors.password && <p className="text-red-500 text-sm mt-1">{form.formState.errors.password.message}</p>}
                         </div>
-                        <Button type="submit" className="w-full">Entrar</Button>
+                        <Button type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? 'Conectando...' : 'Entrar'}
+                        </Button>
                     </form>
                 </CardContent>
                 <CardFooter className="flex justify-center text-sm">
