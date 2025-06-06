@@ -40,18 +40,15 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
         let birthDate = '';
         if (customer.birth_date) {
           if (typeof customer.birth_date === 'string') {
-            const isoDate = customer.birth_date.split('T')[0];
-            birthDate = isoDate;
-            
+            const date = new Date(customer.birth_date);
+            date.setHours(23, 59, 0, 0);
+            date.setDate(date.getDate() - 1);
+            birthDate = date.toISOString().split('T')[0];
           } else if (typeof customer.birth_date === 'object') {
-            birthDate = '';
+            if (Object.keys(customer.birth_date).length === 0) {
+              birthDate = '';
+            }
           }
-            const date = new Date(birthDate);
-            
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            birthDate = `${year}-${month}-${day}`;
         }
 
         form.reset({
