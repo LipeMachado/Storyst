@@ -9,7 +9,17 @@ export function formatDate(dateString: string): string {
   if (!dateString) return 'N/A';
   
   try {
+    if (dateString === '[object Object]' || 
+        (typeof dateString === 'object' && dateString !== null)) {
+      return 'N/A';
+    }
+    
     const date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) {
+      return 'Data inválida';
+    }
+    
     return new Intl.DateTimeFormat('pt-BR', {
       day: '2-digit',
       month: '2-digit',
@@ -17,7 +27,7 @@ export function formatDate(dateString: string): string {
     }).format(date);
   } catch (error) {
     console.error('Erro ao formatar data:', error);
-    return dateString;
+    return 'Data inválida';
   }
 }
 

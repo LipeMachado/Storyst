@@ -328,7 +328,8 @@ const CustomerList: React.FC<CustomerListProps> = ({
         
         {totalPages > 1 && (
           <div className="text-center text-sm text-muted-foreground mt-2">
-            Página {currentPage} de {totalPages}
+            <span>Página {currentPage} de {totalPages}&nbsp;</span>
+            <span>- Total de {customers.length} usuários</span>
           </div>
         )}
       </CardContent>
