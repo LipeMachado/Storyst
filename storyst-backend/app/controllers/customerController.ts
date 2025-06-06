@@ -14,23 +14,23 @@ export const getAllCustomers = catchAsync(async (req: Request, res: Response) =>
         created_at: true,
         updated_at: true
       } 
-    })
+    });
 
-    if (!customers) {
-        return res.status(404).json({
-            status: 'fail',
-            message: 'Nenhum cliente encontrado.'
-        });
-    }
+    const serializedCustomers = customers.map(customer => ({
+      ...customer,
+      birth_date: customer.birth_date.toISOString().split('T')[0],
+      created_at: customer.created_at.toISOString(),
+      updated_at: customer.updated_at.toISOString()
+    }));
 
     return res.status(200).json({
         status: 'success',
-        results: customers.length,
+        results: serializedCustomers.length,
         data: {
-            customers
+            customers: serializedCustomers
         }
     });
-})
+});
 
 // GET /api/customers/:id - Get a single client(customer) by ID
 export const getCustomerById = catchAsync(async (req: Request, res: Response) => {
