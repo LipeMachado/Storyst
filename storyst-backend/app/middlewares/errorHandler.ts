@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import ApiError from '../utils/ApiError';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
-const sendErrorDev = (err: ApiError, res: Response) => {
-    res.status(err.statusCode).json({
+const sendErrorDev = (err: Error & { statusCode?: number; status?: string; errors?: any[] }, res: Response) => {
+    res.status(err.statusCode || 500).json({
         status: err.status,
         message: err.message,
         ...(err.errors && { errors: err.errors }),
@@ -11,7 +10,7 @@ const sendErrorDev = (err: ApiError, res: Response) => {
     });
 };
 
-const sendErrorProd = (err: ApiError, res: Response) => {
+const sendErrorProd = (err: Error & { statusCode: number; status: string; isOperational: boolean; errors?: any[] }, res: Response) => {
     if (err.isOperational) {
         res.status(err.statusCode).json({
             status: err.status,
@@ -49,7 +48,7 @@ const handlePrismaError = (err: PrismaClientKnownRequestError) => {
             statusCode = 500;
             break;
     }
-    return new ApiError(statusCode, message, errors);
+    return { statusCode, message, errors, isOperational: true };
 };
 
 
@@ -63,10 +62,10 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
         error = handlePrismaError(error);
     }
 
-    if (!(error instanceof ApiError)) {
+    if (!error.isOperational) {
         const statusCode = error.statusCode || 500;
         const message = error.message || 'Ocorreu um erro interno no servidor.';
-        error = new ApiError(statusCode, message);
+        error = { statusCode, message, isOperational: false };
         error.isOperational = false;
     }
 

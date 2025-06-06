@@ -1,7 +1,6 @@
 import prisma from "../config/prisma";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import ApiError from "../utils/ApiError";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -47,13 +46,13 @@ export const authService = {
     });
 
     if (!user) {
-      throw new Error("Invalid credentials");
+      return { error: "Email ou senha inválidos" }
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
 
     if (!isPasswordValid) {
-      throw new Error("Invalid credentials");
+      return { error: "Email ou senha inválidos" }
     }
 
     const token = jwt.sign(

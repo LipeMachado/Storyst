@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import ApiError from "../utils/ApiError";
 
 declare global {
   namespace Express {
@@ -23,7 +22,10 @@ const authMiddleware = (
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    next(new ApiError(401, "Token de autenticação não fornecido ou inválido."));
+    res.status(401).json({
+      status: 'fail',
+      message: "ID do cliente não encontrado no token de autenticação."
+    });
     return;
   }
 
@@ -39,10 +41,16 @@ const authMiddleware = (
     next();
   } catch (error: any) {
     if (error.name === "TokenExpiredError") {
-      next(new ApiError(401, "Token de autenticação expirado."));
+      res.status(401).json({
+        status: 'fail',
+        message: "Token de autenticação expirado."
+      });
       return;
     }
-    next(new ApiError(401, "Token de autenticação inválido."));
+    res.status(401).json({
+      status: 'fail',
+      message: "Token de autenticação inválido."
+    });
     return;
   }
 };

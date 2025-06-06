@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/catchAsync';
 import { updateCustomerSchema } from '../schemas/customerSchemas';
 
@@ -18,10 +17,13 @@ export const getAllCustomers = catchAsync(async (req: Request, res: Response) =>
     })
 
     if (!customers) {
-        throw new ApiError(404, 'Nenhum cliente encontrado.');
+        return res.status(404).json({
+            status: 'fail',
+            message: 'Nenhum cliente encontrado.'
+        });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
         status: 'success',
         results: customers.length,
         data: {
@@ -33,6 +35,14 @@ export const getAllCustomers = catchAsync(async (req: Request, res: Response) =>
 // GET /api/customers/:id - Get a single client(customer) by ID
 export const getCustomerById = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+        return res.status(404).json({
+            status: 'fail',
+            message: 'Cliente não encontrado.'
+        });
+    }
 
     const customer = await prisma.customer.findUnique({
         where: { id },
@@ -47,10 +57,13 @@ export const getCustomerById = catchAsync(async (req: Request, res: Response) =>
     });
 
     if (!customer) {
-        throw new ApiError(404, 'Cliente não encontrado.');
+        return res.status(404).json({
+            status: 'fail',
+            message: 'Cliente não encontrado.'
+        });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
         status: 'success',
         data: {
             customer,
@@ -69,7 +82,11 @@ export const updateCustomer = catchAsync(async (req: Request, res: Response) => 
             path: err.path.join('.'),
             message: err.message,
         }));
-        throw new ApiError(400, 'Dados de atualização inválidos.', errors);
+        return res.status(400).json({
+            status: 'fail',
+            message: 'Dados de atualização inválidos.',
+            errors
+        });
     }
 
     const { name, email, birth_date } = validationResult.data;
@@ -92,7 +109,7 @@ export const updateCustomer = catchAsync(async (req: Request, res: Response) => 
         },
     });
 
-    res.status(200).json({
+    return res.status(200).json({
         status: 'success',
         message: 'Cliente atualizado com sucesso.',
         data: {
@@ -105,16 +122,21 @@ export const updateCustomer = catchAsync(async (req: Request, res: Response) => 
 export const deleteCustomer = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const customerToDelete = await prisma.customer.findUnique({ where: { id } });
+    const customerToDelete = await prisma.customer.findUnique({ 
+        where: { id } 
+    });
     if (!customerToDelete) {
-        throw new ApiError(404, 'Cliente não encontrado para exclusão.');
+        return res.status(404).json({
+            status: 'fail',
+            message: 'Cliente não encontrado para exclusão.'
+        });
     }
 
     await prisma.customer.delete({
         where: { id },
     });
 
-    res.status(204).json({
+    return res.status(204).json({
         status: 'success',
         message: 'Cliente excluído com sucesso.',
     });

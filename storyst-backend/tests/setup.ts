@@ -4,7 +4,7 @@ import app from '../app/app';
 import http from 'http';
 import supertest from 'supertest';
 
-dotenv.config({ path: '.env.test' });
+dotenv.config({ path: '.env' });
 
 let server: http.Server;
 export let agent: ReturnType<typeof supertest.agent>;

@@ -8,6 +8,24 @@ describe('Statistics Routes', () => {
   let secondCustomerId: string;
 
   beforeAll(async () => {
+    await prisma.sale.deleteMany({
+      where: {
+        customer: {
+          email: {
+            in: ['stats-test1@example.com', 'stats-test2@example.com']
+          }
+        }
+      }
+    });
+    
+    await prisma.customer.deleteMany({
+      where: {
+        email: {
+          in: ['stats-test1@example.com', 'stats-test2@example.com']
+        }
+      }
+    });
+
     const firstUserResponse = await agent
       .post('/api/auth/register')
       .send({
@@ -16,6 +34,10 @@ describe('Statistics Routes', () => {
         name: 'Stats Test User 1',
         birthDate: '1990-01-01'
       });
+
+    if (!firstUserResponse.body.user || !firstUserResponse.body.user.id) {
+      throw new Error(`Failed to register test user: ${JSON.stringify(firstUserResponse.body)}`);
+    }
 
     authToken = firstUserResponse.body.token;
     testCustomerId = firstUserResponse.body.user.id;

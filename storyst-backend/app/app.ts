@@ -5,8 +5,8 @@ import cors from "cors"
 import authRoutes from './routes/authRoutes';
 import customerRoutes from './routes/customerRoutes';
 import saleRoutes from './routes/saleRoutes';
-import ApiError from './utils/ApiError';
 import errorHandler from "./middlewares/errorHandler";
+import decimalSerializer from './middlewares/decimalSerializer';
 
 dotenv.config()
 
@@ -16,10 +16,11 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors())
-app.use(express.json())
+app.use(express.json());
+app.use(decimalSerializer);
 
-//Routes
-app.use('/api/auth', authRoutes)
+// Rotas
+app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes)
 app.use('/api/sales', saleRoutes)
 
@@ -28,7 +29,7 @@ app.get('/', (req, res) => {
 })
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-    next(new ApiError(404, 'Rota não encontrada.'));
+    next({ status: 404, message: 'Rota não encontrada.' });
 });
 
 app.use(errorHandler);

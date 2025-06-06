@@ -1,7 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import authMiddleware from "../middlewares/auth";
 import prisma from "../config/prisma";
-import ApiError from "../utils/ApiError";
 import catchAsync from "../utils/catchAsync";
 
 import {
@@ -18,10 +17,7 @@ router.get(
   authMiddleware,
   catchAsync(async (req: Request, res: Response) => {
     if (!req.user || !req.user.id) {
-      throw new ApiError(
-        401,
-        "Usuário não autenticado ou cliente não encontrado nas credenciais do token."
-      );
+      return res.status(401).json({ message: "Usuário não autenticado." });
     }
 
     const customer = await prisma.customer.findUnique({
@@ -37,10 +33,10 @@ router.get(
     });
 
     if (!customer) {
-      throw new ApiError(404, "Cliente não encontrado no banco de dados.");
+      return res.status(404).json({ message: "Cliente não encontrado." });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Perfil do cliente obtido com sucesso.",
       customer: customer,
     });

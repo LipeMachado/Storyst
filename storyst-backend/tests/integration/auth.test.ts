@@ -66,7 +66,7 @@ describe('Auth Routes', () => {
         .post('/api/auth/register')
         .send(userData);
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(409);
       expect(response.body).toHaveProperty('message');
     });
   });

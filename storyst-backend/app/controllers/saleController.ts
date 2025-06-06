@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import prisma from "../config/prisma";
-import ApiError from "../utils/ApiError";
 import catchAsync from "../utils/catchAsync";
 import { createSaleSchema } from "../schemas/saleSchemas";
 
@@ -13,16 +12,20 @@ export const createSale = catchAsync(async (req: Request, res: Response) => {
       path: err.path.join("."),
       message: err.message,
     }));
-    throw new ApiError(400, "Dados de venda inválidos.", errors);
+    return res.status(400).json({
+      status: 'fail',
+      message: "Dados de venda inválidos.",
+      errors
+    });
   }
 
   const { sale_date, value } = validationResult.data;
 
   if (!req.user || !req.user.id) {
-    throw new ApiError(
-      401,
-      "ID do cliente não encontrado no token de autenticação."
-    );
+    return res.status(401).json({
+      status: 'fail',
+      message: "ID do cliente não encontrado no token de autenticação."
+    });
   }
 
   const customerId = req.user.id;
@@ -50,11 +53,16 @@ export const createSale = catchAsync(async (req: Request, res: Response) => {
     },
   });
 
-  res.status(201).json({
+  const responseData = {
+    ...newSale,
+    value: newSale.value.toNumber()
+  };
+
+  return res.status(201).json({
     status: "success",
     message: "Venda registrada com sucesso.",
     data: {
-      sale: newSale,
+      sale: responseData,
     },
   });
 });
@@ -63,10 +71,10 @@ export const createSale = catchAsync(async (req: Request, res: Response) => {
 export const getDailySalesStatistics = catchAsync(
   async (req: Request, res: Response) => {
     if (!req.user || !req.user.id) {
-      throw new ApiError(
-        401,
-        "ID do cliente não encontrado no token de autenticação."
-      );
+      return res.status(401).json({
+        status: 'fail',
+        message: "ID do cliente não encontrado no token de autenticação."
+      });
     }
 
     const customerId = req.user.id;
@@ -89,7 +97,7 @@ export const getDailySalesStatistics = catchAsync(
       totalSales: entry._sum.value?.toNumber() || 0,
     }));
 
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       message: "Estatísticas de vendas por dia obtidas com sucesso.",
       data: {
@@ -127,7 +135,7 @@ export const getTopVolumeCustomer = catchAsync(
       };
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       message: "Cliente com maior volume de vendas obtido com sucesso.",
       data: {
@@ -172,7 +180,7 @@ export const getTopAverageValueCustomer = catchAsync(
       };
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       message: "Cliente com maior média de valor por venda obtido com sucesso.",
       data: {
@@ -210,7 +218,7 @@ export const getTopFrequencyCustomer = catchAsync(
       };
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       message: "Cliente com maior frequência de compra obtido com sucesso.",
       data: {

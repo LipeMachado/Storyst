@@ -46,10 +46,15 @@ export const authController = {
         .json({ message: "Email e senha são obrigatórios" });
     }
 
-    const { user, token } = await authService.login(email, password);
-    const { password_hash: _, ...userWithoutPassword } = user;
+    const { user, token, error } = await authService.login(email, password);
 
-    res.status(200).json({
+    if (error) {
+      return res.status(401).json({ message: error });
+    }
+    
+    const { password_hash: _, ...userWithoutPassword } = user || {};
+
+    return res.status(200).json({
       message: "User logged in successfully",
       user: userWithoutPassword,
       token,
@@ -81,7 +86,7 @@ export const authController = {
       activeCustomers: 78,
     };
 
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       user: customer,
       dashboardStats,
