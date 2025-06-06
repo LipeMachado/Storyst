@@ -37,7 +37,10 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
         setLoading(true);
         const customer = await getCustomerById(customerId);
 
-        const birthDate = customer.birth_date.split('T')[0];
+        let birthDate = '';
+        if (customer.birth_date && typeof customer.birth_date === 'string') {
+          birthDate = customer.birth_date.split('T')[0];
+        }
 
         form.reset({
           name: customer.name,
