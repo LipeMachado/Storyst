@@ -9,6 +9,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
 import { isAxiosError } from 'axios';
+import toast from 'react-hot-toast';
 
 const customerSchema = z.object({
     name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -34,7 +35,7 @@ const AddCustomerPage: React.FC = () => {
             
             await axiosInstance.post('/customers', formattedData);
             
-            alert('Cliente adicionado com sucesso!');
+            toast.success('Cliente adicionado com sucesso!');
             navigate('/');
         } catch (error: unknown) {
             let errorMessage = 'Ocorreu um erro desconhecido.';
@@ -49,7 +50,7 @@ const AddCustomerPage: React.FC = () => {
                 errorMessage = error.message;
             }
 
-            alert(`Erro ao adicionar cliente: ${errorMessage}`);
+            toast.error(`Erro ao adicionar cliente: ${errorMessage}`);
         }
     };
 

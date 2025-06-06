@@ -11,6 +11,7 @@ import axiosInstance from '@/api/axiosInstance';
 import { useAuth } from '@/hooks/useAuth';
 import type { LoginResponse } from '@/types/api';
 import type { AxiosError } from 'axios';
+import toast from 'react-hot-toast';
 
 const loginSchema = z.object({
     email: z.string().email('Email inválido'),
@@ -34,7 +35,7 @@ const LoginPage: React.FC = () => {
         } catch (error) {
             const axiosError = error as AxiosError<{ message: string }>;
             console.error('Erro no login:', axiosError.response?.data?.message || axiosError.message);
-            alert(`Erro no login: ${axiosError.response?.data?.message || axiosError.message}`);
+            toast.error(`Erro no login: ${axiosError.response?.data?.message || axiosError.message}`);
         }
     };
 
