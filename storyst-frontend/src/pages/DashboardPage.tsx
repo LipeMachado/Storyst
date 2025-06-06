@@ -6,29 +6,29 @@ import TopCustomerCard from '@/components/TopCustomerCard';
 import DailySalesTable from '@/components/DailySalesTable';
 import AddCustomerDialog from '@/components/AddCustomerDialog';
 import { useNavigate } from 'react-router-dom';
-import { 
-  getDailySalesStatistics, 
-  getTopVolumeCustomer, 
-  getTopAverageValueCustomer, 
+import {
+  getDailySalesStatistics,
+  getTopVolumeCustomer,
+  getTopAverageValueCustomer,
   getTopFrequencyCustomer,
 } from '@/api/statisticsService';
 import type { DailySalesStatistic, TopVolumeCustomer, TopAverageValueCustomer, TopFrequencyCustomer } from '@/api/statisticsService';
 import DailySalesChart from '@/components/DailySalesChart';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import toast from 'react-hot-toast';
 
 const DashboardPage: React.FC = () => {
-  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
-  
+
   const [dailyStats, setDailyStats] = useState<DailySalesStatistic[]>([]);
   const [topVolumeCustomer, setTopVolumeCustomer] = useState<TopVolumeCustomer | null>(null);
   const [topAvgCustomer, setTopAvgCustomer] = useState<TopAverageValueCustomer | null>(null);
   const [topFreqCustomer, setTopFreqCustomer] = useState<TopFrequencyCustomer | null>(null);
   const [statsLoading, setStatsLoading] = useState<boolean>(true);
-  const [statsError, setStatsError] = useState<string | null>(null);
 
   const fetchStatistics = async () => {
     setStatsLoading(true);
-    setStatsError(null);
     try {
       const [dailyData, volumeData, avgData, freqData] = await Promise.all([
         getDailySalesStatistics(),
@@ -36,14 +36,14 @@ const DashboardPage: React.FC = () => {
         getTopAverageValueCustomer(),
         getTopFrequencyCustomer()
       ]);
-      
+
       setDailyStats(dailyData);
       setTopVolumeCustomer(volumeData);
       setTopAvgCustomer(avgData);
       setTopFreqCustomer(freqData);
     } catch (err) {
       console.error('Erro ao buscar estatísticas:', err);
-      setStatsError('Não foi possível carregar as estatísticas.');
+      toast.error('Erro ao buscar estatísticas. Tente novamente mais tarde.');
     } finally {
       setStatsLoading(false);
     }
@@ -55,7 +55,6 @@ const DashboardPage: React.FC = () => {
     }
   }, [isAuthenticated]);
 
-  // Formatadores para os valores dos cards
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', {
       style: 'currency',
@@ -75,63 +74,71 @@ const DashboardPage: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-8">
         <p className="text-xl text-red-500 mb-4">Acesso negado. Por favor, faça login.</p>
-        <Button onClick={() => logout()}>Ir para Login</Button>
+        <Button onClick={() => navigate('/login')}>Ir para Login</Button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <h1 className="text-3xl text-center md:text-left font-bold text-green-700">
-            Bem-vindo ao Dashboard, {user.name}!
-          </h1>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-2">
-            <AddCustomerDialog />
-            <Button onClick={() => navigate('/customers')}>
-              Listar Clientes
-            </Button>
-            <Button variant="destructive" onClick={logout}>
-              Sair
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <DashboardCard 
-            title="Vendas Hoje" 
-            value={statsLoading ? "Carregando..." : dailyStats.length > 0 ? 
-              formatCurrency(dailyStats[dailyStats.length - 1].totalSales) : "R$ 0,00"} 
-          />
-          <DashboardCard 
-            title="Total de Vendas" 
-            value={statsLoading ? "Carregando..." : 
-              formatCurrency(dailyStats.reduce((sum, stat) => sum + stat.totalSales, 0))} 
-          />
-          <DashboardCard 
-            title="Dias com Vendas" 
-            value={statsLoading ? "Carregando..." : dailyStats.length} 
-          />
-        </div>
-
-        {statsError && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-            <p>{statsError}</p>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={fetchStatistics} 
-              className="mt-2"
-            >
-              Tentar novamente
-            </Button>
-          </div>
-        )}
-
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-green-700 mb-4">Clientes em Destaque</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <p className="text-muted-foreground">Bem-vindo, {user.name}!</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <AddCustomerDialog />
+          <Button variant="outline" onClick={fetchStatistics}>Atualizar</Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <DashboardCard
+          title="Vendas Hoje"
+          value={statsLoading ? "Carregando..." : dailyStats.length > 0 ?
+            formatCurrency(dailyStats[dailyStats.length - 1].totalSales) : "R$ 0,00"}
+          icon={<span>💰</span>}
+        />
+        <DashboardCard
+          title="Total de Vendas"
+          value={statsLoading ? "Carregando..." :
+            formatCurrency(dailyStats.reduce((sum, stat) => sum + stat.totalSales, 0))}
+          icon={<span>📈</span>}
+        />
+        <DashboardCard
+          title="Dias com Vendas"
+          value={statsLoading ? "Carregando..." : dailyStats.length}
+          icon={<span>📅</span>}
+        />
+        <DashboardCard
+          title="Média por Dia"
+          value={statsLoading ? "Carregando..." :
+            formatCurrency(dailyStats.length > 0 ?
+              dailyStats.reduce((sum, stat) => sum + stat.totalSales, 0) / dailyStats.length : 0)}
+          icon={<span>⚖️</span>}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle>Analytics</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="">
+                <DailySalesChart statistics={dailyStats} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="lg:col-span-2">
+            <DailySalesTable statistics={dailyStats} />
+          </div>
+
+        </div>
+        <div className="lg:col-span-1 grid gap-4">
+          <div className="grid grid-rows-1 sm:grid-rows-2 lg:grid-rows-3 gap-4">
             <TopCustomerCard
               title="Maior Volume"
               description="Cliente com maior volume total de vendas"
@@ -154,16 +161,20 @@ const DashboardPage: React.FC = () => {
               valueFormatter={(customer) => `${(customer as TopFrequencyCustomer).purchaseCount} compras`}
             />
           </div>
-        </div>
 
-        <div>
-          <h2 className="text-2xl font-bold text-green-700 mb-4">Histórico de Vendas</h2>
-          <div className="space-y-6 flex flex-col gap-20">
-            <div className="w-full h-[500px]">
-              <DailySalesChart statistics={dailyStats} />
-            </div>
-            <DailySalesTable statistics={dailyStats} />
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Analytics Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[200px] flex items-center justify-center bg-blue-100 rounded-lg">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-500">75%</div>
+                  <div className="text-sm text-blue-700">Crescimento de vendas</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

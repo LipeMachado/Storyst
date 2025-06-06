@@ -6,47 +6,53 @@ import RegisterPage from '@/pages/RegisterPage';
 import CustomersPage from '@/pages/CustomersPage';
 import ProtectedRoute from './ProtectedRoute';
 import PublicOnlyRoute from './PublicOnlyRoute';
+import Layout from '@/components/Layout';
+import NotFoundPage from '@/pages/NotFoundPage';
 
 const AppRoutes: React.FC = () => {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
+    <Layout>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/login"
-        element={
-          <PublicOnlyRoute>
-            <LoginPage />
-          </PublicOnlyRoute>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <PublicOnlyRoute>
-            <RegisterPage />
-          </PublicOnlyRoute>
-        }
-      />
-      
-      <Route
-        path="/customers"
-        element={
-          <ProtectedRoute>
-            <CustomersPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/login"
+          element={
+            <PublicOnlyRoute>
+              <LoginPage />
+            </PublicOnlyRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicOnlyRoute>
+              <RegisterPage />
+            </PublicOnlyRoute>
+          }
+        />
 
-      <Route path="*" element={<div>404 Not Found</div>} />
-    </Routes>
+        <Route
+          path="/customers"
+          element={
+            <ProtectedRoute>
+              <CustomersPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={
+          <NotFoundPage />
+        } />
+      </Routes>
+    </Layout>
   );
 };
 

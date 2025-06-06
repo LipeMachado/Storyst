@@ -26,17 +26,17 @@ interface CustomerListProps {
   topFreqCustomer?: TopFrequencyCustomer | null;
 }
 
-const CustomerList: React.FC<CustomerListProps> = ({ 
-  onRefresh, 
-  topVolumeCustomer, 
-  topAvgCustomer, 
-  topFreqCustomer 
+const CustomerList: React.FC<CustomerListProps> = ({
+  onRefresh,
+  topVolumeCustomer,
+  topAvgCustomer,
+  topFreqCustomer
 }) => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
-  
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const customersPerPage = 6;
 
@@ -78,7 +78,7 @@ const CustomerList: React.FC<CustomerListProps> = ({
 
   const getCustomerTopStatus = (customerId: string) => {
     const statuses = [];
-    
+
     if (topVolumeCustomer?.customer.id === customerId) {
       statuses.push({
         type: 'volume',
@@ -89,7 +89,7 @@ const CustomerList: React.FC<CustomerListProps> = ({
         })}`
       });
     }
-    
+
     if (topAvgCustomer?.customer.id === customerId) {
       statuses.push({
         type: 'average',
@@ -100,7 +100,7 @@ const CustomerList: React.FC<CustomerListProps> = ({
         })}`
       });
     }
-    
+
     if (topFreqCustomer?.customer.id === customerId) {
       statuses.push({
         type: 'frequency',
@@ -108,12 +108,12 @@ const CustomerList: React.FC<CustomerListProps> = ({
         description: `Cliente com maior número de compras: ${topFreqCustomer.purchaseCount} compras`
       });
     }
-    
+
     return statuses;
   };
 
   const totalPages = Math.ceil(customers.length / customersPerPage);
-  
+
   const currentCustomers = customers.slice(
     (currentPage - 1) * customersPerPage,
     currentPage * customersPerPage
@@ -155,7 +155,7 @@ const CustomerList: React.FC<CustomerListProps> = ({
           <span>
             Lista de Clientes
           </span>
-          <Button onClick={fetchCustomers} variant="outline" size="sm">
+          <Button onClick={fetchCustomers} variant="outline">
             Atualizar Lista
           </Button>
         </CardTitle>
@@ -183,7 +183,7 @@ const CustomerList: React.FC<CustomerListProps> = ({
             ) : (
               currentCustomers.map((customer) => {
                 const topStatuses = getCustomerTopStatus(customer.id);
-                
+
                 return (
                   <TableRow key={customer.id}>
                     <TableCell className="font-medium">
@@ -195,8 +195,8 @@ const CustomerList: React.FC<CustomerListProps> = ({
                               <TooltipTrigger asChild>
                                 <div className="flex gap-1">
                                   {topStatuses.map((status, index) => (
-                                    <Badge 
-                                      key={index} 
+                                    <Badge
+                                      key={index}
                                       className={`
                                         ${status.type === 'volume' ? 'bg-green-600 hover:bg-green-700' : ''}
                                         ${status.type === 'average' ? 'bg-blue-600 hover:bg-blue-700' : ''}
@@ -228,8 +228,8 @@ const CustomerList: React.FC<CustomerListProps> = ({
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        <EditCustomerDialog 
-                          customerId={customer.id} 
+                        <EditCustomerDialog
+                          customerId={customer.id}
                           onSuccess={fetchCustomers}
                         />
                         <Button
@@ -248,46 +248,46 @@ const CustomerList: React.FC<CustomerListProps> = ({
             )}
           </TableBody>
         </Table>
-        
+
         {totalPages > 1 && (
           <div className="flex justify-center items-center mt-4 gap-2 flex-wrap">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => goToPage(1)} 
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => goToPage(1)}
               disabled={currentPage === 1}
               className="hidden sm:inline-flex"
             >
               Primeira
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => goToPage(currentPage - 1)} 
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage === 1}
             >
               Anterior
             </Button>
-            
+
             <div className="flex items-center gap-1 flex-wrap justify-center">
               {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .filter(page => {
                   if (window.innerWidth < 640) {
-                    return page === 1 || page === totalPages || 
-                           (page >= currentPage - 1 && page <= currentPage + 1);
+                    return page === 1 || page === totalPages ||
+                      (page >= currentPage - 1 && page <= currentPage + 1);
                   }
-                  return page === 1 || page === totalPages || 
-                         (page >= currentPage - 2 && page <= currentPage + 2);
+                  return page === 1 || page === totalPages ||
+                    (page >= currentPage - 2 && page <= currentPage + 2);
                 })
                 .map(page => (
                   <React.Fragment key={page}>
-                    {page > 1 && 
-                     ((window.innerWidth < 640 && page === currentPage - 1 && currentPage > 2) ||
-                      (window.innerWidth >= 640 && page === currentPage - 2 && currentPage > 3)) && 
+                    {page > 1 &&
+                      ((window.innerWidth < 640 && page === currentPage - 1 && currentPage > 2) ||
+                        (window.innerWidth >= 640 && page === currentPage - 2 && currentPage > 3)) &&
                       <span className="px-2">...</span>
                     }
-                    
-                    <Button 
+
+                    <Button
                       variant={currentPage === page ? "default" : "outline"}
                       size="sm"
                       onClick={() => goToPage(page)}
@@ -295,29 +295,29 @@ const CustomerList: React.FC<CustomerListProps> = ({
                     >
                       {page}
                     </Button>
-                    
-                    {page < totalPages && 
-                     ((window.innerWidth < 640 && page === currentPage + 1 && currentPage < totalPages - 1) ||
-                      (window.innerWidth >= 640 && page === currentPage + 2 && currentPage < totalPages - 2)) && 
+
+                    {page < totalPages &&
+                      ((window.innerWidth < 640 && page === currentPage + 1 && currentPage < totalPages - 1) ||
+                        (window.innerWidth >= 640 && page === currentPage + 2 && currentPage < totalPages - 2)) &&
                       <span className="px-2">...</span>
                     }
                   </React.Fragment>
                 ))
               }
             </div>
-            
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => goToPage(currentPage + 1)} 
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
               Próxima
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => goToPage(totalPages)} 
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => goToPage(totalPages)}
               disabled={currentPage === totalPages}
               className="hidden sm:inline-flex"
             >
@@ -325,7 +325,7 @@ const CustomerList: React.FC<CustomerListProps> = ({
             </Button>
           </div>
         )}
-        
+
         {totalPages > 1 && (
           <div className="text-center text-sm text-muted-foreground mt-2">
             <span>Página {currentPage} de {totalPages}&nbsp;</span>
