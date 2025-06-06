@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import type { DailySalesStatistic } from '@/api/statisticsService';
 
 interface DailySalesTableProps {
@@ -77,33 +76,38 @@ const DailySalesTable: React.FC<DailySalesTableProps> = ({ statistics }) => {
         <CardDescription>Histórico de vendas por dia</CardDescription>
       </CardHeader>
       <CardContent>
-        {/* Filtro de data */}
-        <div className="flex flex-col sm:flex-row gap-2 mb-4">
+        <div className="flex flex-col xl:flex-row gap-2 mb-4">
           <div className="flex flex-col sm:flex-row gap-2">
             <div>
               <label htmlFor="startDate" className="text-sm font-medium block mb-1">Data Inicial</label>
               <div className="relative w-full">
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full appearance-none"
-                />
+                <div className="flex items-center justify-between border border-input rounded-md overflow-hidden h-9 bg-transparent">
+                  <input
+                    id="startDate"
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="flex-1 px-3 py-1 outline-none border-0 bg-transparent appearance-none"
+                  />
+                </div>
               </div>
             </div>
             <div>
               <label htmlFor="endDate" className="text-sm font-medium block mb-1">Data Final</label>
-              <Input
-                id="endDate"
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full sm:w-auto"
-              />
+              <div className="relative w-full">
+                <div className="flex items-center justify-between border border-input rounded-md overflow-hidden h-9 bg-transparent">
+                  <input
+                    id="endDate"
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="flex-1 px-3 py-1 outline-none border-0 bg-transparent appearance-none"
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex items-end gap-2">
+          <div className="flex gap-2">
             <Button
               onClick={applyFilters}
               className="mt-auto"
@@ -145,7 +149,6 @@ const DailySalesTable: React.FC<DailySalesTableProps> = ({ statistics }) => {
               </TableFooter>
             </Table>
 
-            {/* Paginação */}
             {totalPages > 1 && (
               <div className="flex justify-center items-center mt-4 gap-2 flex-wrap">
                 <Button

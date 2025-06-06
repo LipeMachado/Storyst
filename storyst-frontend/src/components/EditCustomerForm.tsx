@@ -25,7 +25,7 @@ interface EditCustomerFormProps {
 const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSuccess }) => {
   const [loading, setLoading] = useState(true);
   const [emailError, setEmailError] = useState<string | null>(null);
-  
+
   const form = useForm<CustomerEditFormData>({
     resolver: zodResolver(customerEditSchema),
     defaultValues: { name: '', email: '', birthDate: '' },
@@ -36,9 +36,9 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
       try {
         setLoading(true);
         const customer = await getCustomerById(customerId);
-        
+
         const birthDate = customer.birth_date.split('T')[0];
-        
+
         form.reset({
           name: customer.name,
           email: customer.email,
@@ -59,14 +59,14 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
 
   const onSubmit = async (data: CustomerEditFormData) => {
     setEmailError(null);
-    
+
     try {
       const formattedData = {
         name: data.name,
         email: data.email,
         birth_date: data.birthDate
       };
-      
+
       await updateCustomer(customerId, formattedData);
       toast.success('Cliente atualizado com sucesso!');
       onSuccess();
@@ -76,7 +76,7 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
       if (isAxiosError(error)) {
         if (error.response?.data && typeof error.response.data === 'object' && 'message' in error.response.data) {
           errorMessage = (error.response.data as { message: string }).message;
-          
+
           if (errorMessage.includes('email')) {
             setEmailError('Este email já está em uso por outro cliente.');
             form.setFocus('email');
@@ -108,11 +108,11 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
       </div>
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
-        <Input 
-          id="email" 
-          type="email" 
-          placeholder="cliente@exemplo.com" 
-          {...form.register('email')} 
+        <Input
+          id="email"
+          type="email"
+          placeholder="cliente@exemplo.com"
+          {...form.register('email')}
           className={emailError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}
           onChange={() => emailError && setEmailError(null)}
         />

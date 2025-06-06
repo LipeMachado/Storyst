@@ -28,7 +28,7 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 const RegisterPage: React.FC = () => {
     const navigate = useNavigate();
     const [emailError, setEmailError] = useState<string | null>(null);
-    
+
     const form = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema),
         defaultValues: { name: '', email: '', password: '', confirmPassword: '', birthDate: '' },
@@ -36,7 +36,7 @@ const RegisterPage: React.FC = () => {
 
     const onSubmit = async (data: RegisterFormData) => {
         setEmailError(null);
-        
+
         try {
             const formattedData = {
                 ...data,
@@ -54,13 +54,13 @@ const RegisterPage: React.FC = () => {
             if (isAxiosError(error)) {
                 if (error.response?.data) {
                     const responseData = error.response.data;
-                    
+
                     if (error.response.status === 409) {
                         if (responseData.errors && Array.isArray(responseData.errors)) {
                             const emailErrorObj = responseData.errors.find((err: { path: string | string[] }) =>
                                 err.path === 'email' || (Array.isArray(err.path) && err.path.includes('email'))
                             );
-                            
+
                             if (emailErrorObj) {
                                 errorMessage = emailErrorObj.message;
                             } else {
@@ -69,7 +69,7 @@ const RegisterPage: React.FC = () => {
                         } else {
                             errorMessage = responseData.message || 'Este email já está cadastrado';
                         }
-                        
+
                         setEmailError(errorMessage);
                         form.setFocus('email');
                     } else if (typeof responseData === 'object' && 'message' in responseData) {
@@ -103,11 +103,11 @@ const RegisterPage: React.FC = () => {
                         </div>
                         <div>
                             <Label htmlFor="email" className='mb-3'>Email</Label>
-                            <Input 
-                                id="email" 
-                                type="email" 
-                                placeholder="exemplo@gmail.com" 
-                                {...form.register('email')} 
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="exemplo@gmail.com"
+                                {...form.register('email')}
                                 className={emailError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}
                                 onChange={() => emailError && setEmailError(null)}
                             />
@@ -116,7 +116,7 @@ const RegisterPage: React.FC = () => {
                         </div>
                         <div>
                             <Label htmlFor="birthDate" className='mb-3'>Data de Nascimento</Label>
-                            <Input id="birthDate" type="date" {...form.register('birthDate')} />
+                            <input id="birthDate" type="date" {...form.register('birthDate')} />
                             {form.formState.errors.birthDate && <p className="text-red-500 text-sm mt-1">{form.formState.errors.birthDate.message}</p>}
                         </div>
                         <div>
