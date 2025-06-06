@@ -17,7 +17,7 @@ const registerSchema = z.object({
     email: z.string().email('Email inválido'),
     password: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
     confirmPassword: z.string(),
-    birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de data inválido (AAAA-MM-DD)'),
+    birthDate: z.string().regex(/^\d{2}-\d{2}-\d{4}$/, 'Formato de data inválido (DD-MM-AAAA)'),
 }).refine((data) => data.password === data.confirmPassword, {
     message: 'As senhas não coincidem',
     path: ['confirmPassword'],
@@ -86,7 +86,6 @@ const RegisterPage: React.FC = () => {
         }
     };
 
-    // Atualizar o JSX para incluir o tratamento de erro de email
     return (
         <div className="flex justify-center items-center min-h-screen">
             <Card className="w-full max-w-sm">

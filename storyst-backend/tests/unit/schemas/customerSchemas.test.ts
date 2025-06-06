@@ -45,7 +45,7 @@ describe('Customer Schemas', () => {
 
     it('should reject invalid birth_date format', () => {
       const invalidData = {
-        birth_date: '01/01/1990' // Formato incorreto
+        birth_date: '01/01/1990'
       };
       
       const result = updateCustomerSchema.safeParse(invalidData);
