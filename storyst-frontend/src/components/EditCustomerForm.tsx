@@ -71,11 +71,18 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({ customerId, onSucce
     setEmailError(null);
   
     try {
-      const formattedData = {
+      const formattedData: {
+        name: string;
+        email: string;
+        birth_date?: string;
+      } = {
         name: data.name,
-        email: data.email,
-        birth_date: data.birthDate
+        email: data.email
       };
+      
+      if (data.birthDate && data.birthDate.trim() !== '') {
+        formattedData.birth_date = data.birthDate;
+      }
   
       await updateCustomer(customerId, formattedData);
       toast.success('Cliente atualizado com sucesso!');
